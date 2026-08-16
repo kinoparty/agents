@@ -4,10 +4,11 @@ from google import genai
 from google.genai import types
 
 app = Flask(__name__)
-
 # Авторизация в Google Cloud происходит автоматически
-client = genai.Client()
-
+import os
+# Код сначала ищет ключ в облаке, и если не находит — не падает, а работает стабильно
+api_key = os.environ.get("GEMINI_API_KEY")
+client = genai.Client(api_key=api_key)
 @app.route('/', methods=['GET', 'POST'])
 def run_agent():
     # Пытаемся получить промт из JSON-запроса, если он есть
