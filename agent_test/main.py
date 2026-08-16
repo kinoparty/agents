@@ -5,6 +5,44 @@ from google.genai import types
 
 app = Flask(__name__)
 
+# Инициализируем клиент. Он автоматически подтянет авторизацию вашего проекта.
+client = genai.Client()
+
+@app.route('/', methods=['GET', 'POST'])
+def run_agent():
+    user_prompt = "Придумай одну бизнес-идею на стыке ИИ и экологии."
+    if request.is_json:
+        request_json = request.get_json(silent=True)
+        if request_json and 'prompt' in request_json:
+            user_prompt = request_json['prompt']
+    elif request.args and 'prompt' in request.args:
+        user_prompt = request.args.get('prompt')
+
+    try:
+        # Для облака Vertex AI имя модели пишется строго без префикса 'models/'
+        # Используем новейшую стабильную модель gemini-1.5-flash
+        response = client.models.generate_content(
+            model='gemini-1.5-flash',
+            contents=user_prompt,
+            config=types.GenerateContentConfig(
+                system_instruction="Ты — опытный ИИ-агент. Твоя цель — давать автономные решения.",
+                temperature=0.7,
+            )
+        )
+        return jsonify({"status": "success", "agent_response": response.text}), 200
+    except Exception as e:
+        return jsonify({"status": "error", "message": str(e)}), 500
+
+if __name__ == '__main__':
+    port = int(os.environ.get('PORT', 8080))
+    app.run(host='0.0.0.0', port=port)
+import os
+from flask import Flask, request, jsonify
+from google import genai
+from google.genai import types
+
+app = Flask(__name__)
+
 # Считываем ключ
 api_key = os.environ.get("GEMINI_API_KEY", "")
 if api_key.startswith("AQ"):
