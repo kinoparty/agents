@@ -1,2 +1,2 @@
-functions-framework==3.*
-google-genai==0.1.1
+functions-framework
+google-genai
