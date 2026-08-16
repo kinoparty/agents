@@ -1,4 +1,35 @@
 import os
+import telebot
+from google import genai
+
+# Инициализируем Telegram-бота
+TOKEN = "ВСТАВЬТЕ_СЮДА_ТОКЕН_ОТ_BOTFATHER"
+bot = telebot.TeleBot(TOKEN)
+
+# Инициализируем ИИ-клиента Google по вашему ключу AQ
+api_key = os.environ.get("GEMINI_API_KEY", "AQ.Ab8RN6LHXjm23jGNDs2uVJBA3lHFD5c... ВСТАВЬТЕ ВАШ КЛЮЧ ПОЛНОСТЬЮ")
+os.environ["GCP_CREDENTIALS"] = api_key
+client = genai.Client()
+
+@bot.message_handler(func=lambda message: True)
+def handle_message(message):
+    user_prompt = message.text
+    
+    # Если бот в группе, он будет отвечать на любые сообщения
+    try:
+        # Запуск новейшей модели, как на вашем скриншоте
+        response = client.models.generate_content(
+            model='gemini-1.5-flash',
+            contents=user_prompt
+        )
+        bot.reply_to(message, response.text)
+    except Exception as e:
+        bot.reply_to(message, f"Ошибка агента: {str(e)}")
+
+if __name__ == '__main__':
+    print("Бот успешно запущен и слушает Telegram...")
+    bot.infinity_polling()
+import os
 from flask import Flask, request, jsonify
 from google import genai
 from google.genai import types
