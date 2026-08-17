@@ -42,16 +42,13 @@ def handle_message(message):
             tool_config=tool_config,
         )
         
-        response_text = ""
-        for chunk in client.models.generate_content_stream(
+        response = client.models.generate_content(
             model="gemini-3.7-flash",
             contents=contents,
             config=generate_content_config,
-        ):
-            if not chunk.candidates or not chunk.candidates[0].content or not chunk.candidates[0].content.parts:
-                continue
-            response_text += chunk.text
-
+        )
+        
+        response_text = response.text
         bot.reply_to(message, response_text if response_text else "...")
     except Exception as e:
         bot.reply_to(message, f"Error: {str(e)}")
