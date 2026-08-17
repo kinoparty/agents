@@ -1,5 +1,0 @@
-pyTelegramBotAPI
-google-genai
-flask
-google-genai
-urllib3==2.2.1
