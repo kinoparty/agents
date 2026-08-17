@@ -26,10 +26,6 @@ def handle_message(message):
             types.Tool(google_search=types.GoogleSearch()),
         ]
         
-        tool_config = types.ToolConfig(
-            retrieval_config=types.RetrievalConfig(),
-        )
-        
         generate_content_config = types.GenerateContentConfig(
             max_output_tokens=65535,
             safety_settings=[
@@ -39,7 +35,6 @@ def handle_message(message):
                 types.SafetySetting(category="HARM_CATEGORY_HARASSMENT", threshold="OFF")
             ],
             tools=tools,
-            tool_config=tool_config,
         )
         
         response = client.models.generate_content(
