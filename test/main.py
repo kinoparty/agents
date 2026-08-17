@@ -10,7 +10,7 @@ GOOGLE_CLOUD_API_KEY = os.environ.get("GOOGLE_CLOUD_API_KEY")
 bot = telebot.TeleBot(TELEGRAM_TOKEN)
 app = Flask(__name__)
 
-client = genai.Client(vertexai=True, api_key=GOOGLE_CLOUD_API_KEY)
+client = genai.Client(api_key=GOOGLE_CLOUD_API_KEY)
 
 @bot.message_handler(func=lambda message: True)
 def handle_message(message):
